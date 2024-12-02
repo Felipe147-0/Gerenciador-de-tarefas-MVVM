@@ -8,6 +8,7 @@ class Task ( var description: String, var isCompleted: Boolean ) {
 
     var id: Long = 0L
 
+
     init {
         id = lastId
         lastId += 1L

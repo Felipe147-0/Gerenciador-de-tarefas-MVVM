@@ -9,10 +9,12 @@ import androidx.core.content.ContextCompat
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.R
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.data.model.Task
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.databinding.TasklistItemBinding
+import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.ui.listener.TaskClickListener
 
 class TaskAdapter(
     context: Context,
-    private var tasks: List<Task>
+    private var tasks: List<Task>,
+    private val clickListener: TaskClickListener
 ) : ArrayAdapter<Task>(context, R.layout.tasklist_item, tasks) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -36,6 +38,9 @@ class TaskAdapter(
             } else {
                 binding.imageDone.setColorFilter(ContextCompat.getColor(context, R.color.red))
             }
+            binding.imageDone.setOnClickListener {
+                clickListener.clickDone(position)
+            }
         }
 
         return binding.root
@@ -43,8 +48,8 @@ class TaskAdapter(
 
     fun updateTasks(newTasks: List<Task>) {
         tasks = newTasks
-        clear()
-        addAll(tasks)
-        notifyDataSetChanged()
+        clear()                 // Limpa o datasource do ArrayAdapter
+        addAll(tasks)           // Adiciona todas as tarefas de tasks no datasource de ArrayAdapter
+        notifyDataSetChanged()  // Notifica o ArrayAdapter que houve mudança nos dados
     }
 }
