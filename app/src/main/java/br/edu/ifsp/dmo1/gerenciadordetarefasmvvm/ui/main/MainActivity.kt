@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
 
     override fun clickDone(position: Int) {
         viewModel.updateTask(position)
+        binding.spinnerFilter.setSelection(0)
+        viewModel.filterTasks(getString(R.string.filter_all))
     }
 
     private fun configListView() {
