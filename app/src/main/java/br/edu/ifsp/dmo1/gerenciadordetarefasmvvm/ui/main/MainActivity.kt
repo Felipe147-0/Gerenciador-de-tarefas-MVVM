@@ -66,24 +66,32 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
     private fun configOnClickListener() {
         binding.buttonAddTask.setOnClickListener {
             openDialogNewTask()
-            binding.spinnerFilter.setSelection(0) // Definir para o item "All"
-            // Atualiza o filtro para "All" no ViewModel
+            binding.spinnerFilter.setSelection(0)
             val filter = getString(R.string.filter_all)  // Internacionalizado
             viewModel.filterTasks(filter)
         }
     }
 
     private fun configSpinner() {
-        val filters = listOf("All", "Completed", "Not Completed")
+        val filters = listOf(
+            "Todas",
+            "Completadas",
+            "Não Completadas"
+        )
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filters)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerFilter.adapter = spinnerAdapter
 
-        // Ação ao selecionar uma opção do Spinner
+        // opção do Spinner
         binding.spinnerFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: android.view.View?,
+                position: Int,
+                id: Long
+            ) {
                 val filter = filters[position]
-                viewModel.filterTasks(filter) // Aplico o filtro no ViewModel
+                viewModel.filterTasks(filter)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}

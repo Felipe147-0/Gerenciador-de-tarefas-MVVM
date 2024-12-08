@@ -7,27 +7,24 @@
     android:padding="8dp"
     tools:context=".ui.main.MainActivity">
 
-    <!-- Spinner para Filtrar Tarefas -->
     <Spinner
         android:id="@+id/spinner_filter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ListView para Exibir as Tarefas -->
     <ListView
         android:id="@+id/list_tasks"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/spinner_filter"
         app:layout_constraintBottom_toTopOf="@id/button_add_task"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_filter" />
 
-    <!-- Botão para Adicionar Nova Tarefa -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_add_task"
         android:layout_width="wrap_content"

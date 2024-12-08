@@ -9,6 +9,7 @@
     <string name="alter_task_state">toggle</string>
     <string name="task_inserted_success">Insert with sucess.</string>
     <string name="task_updated_success">update with sucess.</string>
+
     <string name="filter_all">All</string>
     <string name="filter_completed">Completed</string>
     <string name="filter_not_completed">Not completed</string>
