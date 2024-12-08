@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Task Manager MVVM</string>
+    <string name="add_new_task">Insert new task.</string>
+    <string name="task_description">Descrition of task</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="task_inserted_sucess">task inserted with sucess.</string>
+    <string name="task_inserted_error">Error to insert message.</string>
+    <string name="alter_task_state">toggle</string>
+    <string name="task_inserted_success">Insert with sucess.</string>
+    <string name="task_updated_success">update with sucess.</string>
+    <string name="filter_all">All</string>
+    <string name="filter_completed">Completed</string>
+    <string name="filter_not_completed">Not completed</string>
+</resources>

@@ -9,4 +9,7 @@
     <string name="alter_task_state">alternar</string>
     <string name="task_inserted_success">Inserido com sucesso</string>
     <string name="task_updated_success">Atualizado com sucesso</string>
+    <string name="filter_all">Todas</string>
+    <string name="filter_completed">Completadas</string>
+    <string name="filter_not_completed">Não Completadas</string>
 </resources>

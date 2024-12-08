@@ -9,11 +9,15 @@ import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.data.model.Task
 class MainViewModel : ViewModel() {
     private val dao = TaskDao
 
+    // Lista completa de tarefas
     private val _tasks = MutableLiveData<List<Task>>()
     val tasks: LiveData<List<Task>>
-        get() {
-            return _tasks
-        }
+        get() = _tasks
+
+    // Lista filtrada de tarefas
+    private val _filteredTasks = MutableLiveData<List<Task>>()
+    val filteredTasks: LiveData<List<Task>>
+        get() = _filteredTasks
 
     private val _insertTask = MutableLiveData<Boolean>()
     val insertTask: LiveData<Boolean> = _insertTask
@@ -23,8 +27,8 @@ class MainViewModel : ViewModel() {
         get() = _updateTask
 
     init {
-        mock()
-        load()
+        mock() // Adiciona tarefas mockadas
+        load() // Carrega as tarefas inicialmente
     }
 
     fun insertTask(description: String) {
@@ -49,5 +53,21 @@ class MainViewModel : ViewModel() {
 
     private fun load() {
         _tasks.value = dao.getAll()
+        filterTasks("All") // Atualiza a lista filtrada inicialmente para "All"
+    }
+
+    // Função para filtrar as tarefas com base no filtro selecionado
+    fun filterTasks(filter: String) {
+        val originalTasks = _tasks.value ?: listOf()
+
+        val filtered = when (filter) {
+
+            "All" -> originalTasks
+            "Completed" -> originalTasks.filter { it.isCompleted }
+            "Not Completed" -> originalTasks.filter { !it.isCompleted }
+            else -> originalTasks
+        }
+
+        _filteredTasks.value = filtered // Atualiza o LiveData das tarefas filtradas
     }
 }

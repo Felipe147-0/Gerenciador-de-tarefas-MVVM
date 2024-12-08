@@ -1,14 +1,11 @@
 package br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.ui.main
 
-import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.R
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.databinding.ActivityMainBinding
@@ -17,6 +14,7 @@ import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.ui.adapter.TaskAdapter
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.ui.listener.TaskClickListener
 
 class MainActivity : AppCompatActivity(), TaskClickListener {
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: TaskAdapter
@@ -28,49 +26,67 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        configListview()
+        configSpinner() // Configuração do Spinner
+        configListView()
         configOnClickListener()
         configObservers()
-
     }
 
     override fun clickDone(position: Int) {
         viewModel.updateTask(position)
     }
 
-    private fun configListview() {
+    private fun configListView() {
         adapter = TaskAdapter(this, mutableListOf(), this)
         binding.listTasks.adapter = adapter
     }
 
     private fun configObservers() {
-        viewModel.tasks.observe(this, Observer {
-            adapter.updateTasks(it)
-        })
+        viewModel.filteredTasks.observe(this) { tasks ->
+            adapter.updateTasks(tasks)
+        }
 
-        viewModel.insertTask.observe(this, Observer {
-            val str: String = if (it) {
+        viewModel.insertTask.observe(this) { success ->
+            val message = if (success) {
                 getString(R.string.task_inserted_success)
             } else {
                 getString(R.string.task_inserted_error)
             }
-            Toast.makeText(this, str, Toast.LENGTH_LONG).show()
-        })
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }
 
-        viewModel.updateTask.observe(this, Observer {
-            if (it) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.task_updated_success),
-                    Toast.LENGTH_SHORT)
+        viewModel.updateTask.observe(this) { success ->
+            if (success) {
+                Toast.makeText(this, getString(R.string.task_updated_success), Toast.LENGTH_SHORT)
                     .show()
             }
-        })
+        }
     }
 
     private fun configOnClickListener() {
         binding.buttonAddTask.setOnClickListener {
             openDialogNewTask()
+            binding.spinnerFilter.setSelection(0) // Definir para o item "All"
+            // Atualiza o filtro para "All" no ViewModel
+            val filter = getString(R.string.filter_all)  // Internacionalizado
+            viewModel.filterTasks(filter)
+        }
+    }
+
+    private fun configSpinner() {
+        val filters = listOf("All", "Completed", "Not Completed")
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filters)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerFilter.adapter = spinnerAdapter
+
+        // Ação ao selecionar uma opção do Spinner
+        binding.spinnerFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                val filter = filters[position]
+                viewModel.filterTasks(filter) // Aplico o filtro no ViewModel
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
@@ -81,18 +97,14 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
         val builder = AlertDialog.Builder(this)
             .setView(dialogView)
             .setTitle(getString(R.string.add_new_task))
-            .setPositiveButton(
-                getString(R.string.save),
-                DialogInterface.OnClickListener { dialog, which ->
-                    val description = bindingDialog.editDescription.text.toString()
-                    viewModel.insertTask(description)
-                    dialog.dismiss()
-                })
-            .setNegativeButton(
-                getString(R.string.cancel),
-                DialogInterface.OnClickListener { dialog, which ->
-                    dialog.dismiss()
-                })
+            .setPositiveButton(getString(R.string.save)) { dialog, _ ->
+                val description = bindingDialog.editDescription.text.toString()
+                viewModel.insertTask(description)
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
 
         val dialog = builder.create()
         dialog.show()
