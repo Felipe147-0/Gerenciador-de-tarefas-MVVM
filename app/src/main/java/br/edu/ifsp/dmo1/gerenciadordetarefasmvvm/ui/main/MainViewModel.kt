@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.data.dao.TaskDao
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.data.model.Task
+import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.data.model.FilterEnum
 
 class MainViewModel : ViewModel() {
     private val dao = TaskDao
@@ -51,17 +52,18 @@ class MainViewModel : ViewModel() {
 
     private fun load() {
         _tasks.value = dao.getAll()
-        filterTasks("All")
+        filterTasks(FilterEnum.FILTER_ALL)
     }
 
-    fun filterTasks(filter: String) {
+    fun filterTasks(filter: FilterEnum) {
         val originalTasks = _tasks.value ?: listOf()
+
 
         val filtered = when (filter) {
 
-            "Todas" -> originalTasks
-            "Completadas" -> originalTasks.filter { it.isCompleted }
-            "Não Completadas" -> originalTasks.filter { !it.isCompleted }
+            FilterEnum.FILTER_ALL -> originalTasks
+            FilterEnum.FILTER_COMPLETED -> originalTasks.filter { it.isCompleted }
+            FilterEnum.FILTER_NOT_COMPLETED -> originalTasks.filter { !it.isCompleted }
             else -> originalTasks
         }
 

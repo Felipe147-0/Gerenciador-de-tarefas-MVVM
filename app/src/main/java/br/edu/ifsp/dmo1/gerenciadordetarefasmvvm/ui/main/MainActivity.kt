@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.R
+import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.data.model.FilterEnum
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.databinding.ActivityMainBinding
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.databinding.DialogNewTaskBinding
 import br.edu.ifsp.dmo1.gerenciadordetarefasmvvm.ui.adapter.TaskAdapter
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
     override fun clickDone(position: Int) {
         viewModel.updateTask(position)
         binding.spinnerFilter.setSelection(0)
-        viewModel.filterTasks(getString(R.string.filter_all))
+        viewModel.filterTasks(FilterEnum.FILTER_ALL)
     }
 
     private fun configListView() {
@@ -69,18 +70,15 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
         binding.buttonAddTask.setOnClickListener {
             openDialogNewTask()
             binding.spinnerFilter.setSelection(0)
-            val filter = getString(R.string.filter_all)  // Internacionalizado
+            val filter = FilterEnum.FILTER_ALL  // Internacionalizado
             viewModel.filterTasks(filter)
         }
     }
 
     private fun configSpinner() {
-        val filters = listOf(
-            "Todas",
-            "Completadas",
-            "Não Completadas"
-        )
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filters)
+        val filters = FilterEnum.values()
+        val filterNames = filters.map { it.getDisplayName(applicationContext) }
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filterNames)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerFilter.adapter = spinnerAdapter
 
